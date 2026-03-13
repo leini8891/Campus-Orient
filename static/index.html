@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Campus Planner Agent</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero-bar">
+        <div>
+          <p class="eyebrow">Local-first Campus Agent</p>
+          <h1>校园办事路线与日程智能规划</h1>
+        </div>
+        <div class="hero-meta">
+          <span class="meta-pill">隐私优先</span>
+          <span class="meta-pill">课表联动</span>
+          <span class="meta-pill">路线可视化</span>
+        </div>
+      </header>
+
+      <main class="layout-grid">
+        <section class="map-panel panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-kicker">Vector Route Board</p>
+              <h2>校园路线</h2>
+            </div>
+            <div class="legend">
+              <span><i class="dot dot-start"></i> 起点</span>
+              <span><i class="dot dot-fixed"></i> 固定日程</span>
+              <span><i class="dot dot-task"></i> 办事节点</span>
+              <span><i class="dot dot-end"></i> 终点</span>
+            </div>
+          </div>
+
+          <div class="map-stage">
+            <svg id="campus-map" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Campus route map">
+              <defs>
+                <linearGradient id="route-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#ffcb77"></stop>
+                  <stop offset="100%" stop-color="#f25f5c"></stop>
+                </linearGradient>
+                <linearGradient id="land-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                  <stop offset="0%" stop-color="#12343b"></stop>
+                  <stop offset="100%" stop-color="#255957"></stop>
+                </linearGradient>
+              </defs>
+
+              <rect x="0" y="0" width="100" height="100" rx="7" fill="url(#land-gradient)"></rect>
+              <path d="M4 72 C18 54, 22 24, 42 20 S72 28, 96 18" class="terrain"></path>
+              <path d="M8 90 C22 72, 34 54, 47 46 S70 48, 94 62" class="terrain soft"></path>
+              <path d="M12 12 L88 86" class="grid-line"></path>
+              <path d="M8 54 L92 54" class="grid-line"></path>
+              <g id="route-layer"></g>
+              <g id="node-layer"></g>
+            </svg>
+
+            <div class="map-caption" id="map-caption">
+              等待 Agent 生成路线...
+            </div>
+          </div>
+        </section>
+
+        <section class="side-panel">
+          <section class="panel composer-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-kicker">Agent Console</p>
+                <h2>对话与约束</h2>
+              </div>
+              <div id="status-chip" class="status-chip">Ready</div>
+            </div>
+
+            <form id="planner-form" class="planner-form">
+              <label class="field">
+                <span>用户需求</span>
+                <textarea id="query-input" name="query" rows="3">我今天要办理宿舍入住，请帮我规划线路</textarea>
+              </label>
+
+              <div class="field-row">
+                <label class="field">
+                  <span>当前地点</span>
+                  <select id="location-input" name="current_location">
+                    <option value="blk365_singapore">BLK 365 Singapore</option>
+                    <option value="nus_utown">NUS UTown</option>
+                    <option value="nus_yih">NUS YIH</option>
+                    <option value="nus_ea">NUS EA</option>
+                    <option value="kent_ridge_hall">Kent Ridge Hall</option>
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span>当前时间</span>
+                  <input id="time-input" name="current_time" type="time" value="09:40" />
+                </label>
+              </div>
+
+              <button class="primary-button" type="submit">生成今日规划</button>
+            </form>
+          </section>
+
+          <section class="panel thinking-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-kicker">Transparent Reasoning</p>
+                <h2>Agent 思考流</h2>
+              </div>
+            </div>
+            <p id="thought-process" class="thought-process">
+              提交需求后，这里会展示 Agent 如何结合课表、办公时窗和路线耗时做决策。
+            </p>
+            <div id="alerts" class="alerts"></div>
+          </section>
+
+          <section class="panel timeline-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-kicker">Smart Timeline</p>
+                <h2>时间轴</h2>
+              </div>
+              <span id="timeline-count" class="timeline-count">0 steps</span>
+            </div>
+            <div id="timeline" class="timeline"></div>
+          </section>
+
+          <section class="panel details-panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-kicker">Context Pack</p>
+                <h2>技能与材料</h2>
+              </div>
+            </div>
+            <div class="details-grid">
+              <div>
+                <h3>Skills</h3>
+                <ul id="skills-list" class="tag-list"></ul>
+              </div>
+              <div>
+                <h3>Required Materials</h3>
+                <ul id="materials-list" class="material-list"></ul>
+              </div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

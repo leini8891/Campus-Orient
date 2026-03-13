@@ -1,0 +1,5 @@
+.idea/
+.swift-module-cache/
+__pycache__/
+*.pyc
+sjsu-cs46a-fall-2023-syllabus.pdf
