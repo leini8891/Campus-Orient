@@ -7,6 +7,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
+from backend.calendar_sync import sync_calendar_events
 from backend.planner import plan_itinerary
 
 
@@ -15,7 +16,7 @@ STATIC_DIR = ROOT_DIR / "static"
 
 
 class AgentHandler(BaseHTTPRequestHandler):
-    server_version = "CampusPlanner/0.1"
+    server_version = "StudentAssistant/0.1"
 
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
@@ -40,7 +41,7 @@ class AgentHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
-        if parsed.path != "/api/v1/agent/plan_itinerary":
+        if parsed.path not in {"/api/v1/agent/plan_itinerary", "/api/v1/calendar/sync"}:
             self.send_error(HTTPStatus.NOT_FOUND)
             return
 
@@ -55,7 +56,14 @@ class AgentHandler(BaseHTTPRequestHandler):
             )
             return
 
-        response = plan_itinerary(payload)
+        if parsed.path == "/api/v1/agent/plan_itinerary":
+            response = plan_itinerary(payload)
+        else:
+            response = sync_calendar_events(
+                events=payload.get("events", []),
+                provider=payload.get("provider", "google"),
+                output_dir=payload.get("output_dir"),
+            )
         self._send_json(response)
 
     def log_message(self, format: str, *args: object) -> None:
@@ -87,7 +95,7 @@ class AgentHandler(BaseHTTPRequestHandler):
 
 def run(host: str = "127.0.0.1", port: int = 8000) -> None:
     server = ThreadingHTTPServer((host, port), AgentHandler)
-    print(f"Serving Campus Planner on http://{host}:{port}")
+    print(f"Serving Student Assistant on http://{host}:{port}")
     server.serve_forever()
 
 

@@ -3,146 +3,404 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Campus Planner Agent</title>
+    <title>新生报到助手</title>
     <link rel="stylesheet" href="/static/styles.css" />
   </head>
   <body>
     <div class="page-shell">
       <header class="hero-bar">
-        <div>
-          <p class="eyebrow">Local-first Campus Agent</p>
-          <h1>校园办事路线与日程智能规划</h1>
+        <div class="hero-copy">
+          <p class="eyebrow">宿舍入住当天</p>
+          <h1>新生报到助手</h1>
+          <p class="hero-support">
+            如果你今天正准备去办入住，这里会先回答最重要的三件事：还能不能办完、现在先去哪、缺什么会卡住。
+          </p>
         </div>
         <div class="hero-meta">
-          <span class="meta-pill">隐私优先</span>
-          <span class="meta-pill">课表联动</span>
-          <span class="meta-pill">路线可视化</span>
+          <span class="meta-pill">宿舍入住优先</span>
+          <span class="meta-pill">材料检查</span>
+          <span class="meta-pill">兜底方案</span>
         </div>
       </header>
 
       <main class="layout-grid">
-        <section class="map-panel panel">
-          <div class="panel-header">
-            <div>
-              <p class="section-kicker">Vector Route Board</p>
-              <h2>校园路线</h2>
-            </div>
-            <div class="legend">
-              <span><i class="dot dot-start"></i> 起点</span>
-              <span><i class="dot dot-fixed"></i> 固定日程</span>
-              <span><i class="dot dot-task"></i> 办事节点</span>
-              <span><i class="dot dot-end"></i> 终点</span>
-            </div>
-          </div>
-
-          <div class="map-stage">
-            <svg id="campus-map" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="Campus route map">
-              <defs>
-                <linearGradient id="route-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
-                  <stop offset="0%" stop-color="#ffcb77"></stop>
-                  <stop offset="100%" stop-color="#f25f5c"></stop>
-                </linearGradient>
-                <linearGradient id="land-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
-                  <stop offset="0%" stop-color="#12343b"></stop>
-                  <stop offset="100%" stop-color="#255957"></stop>
-                </linearGradient>
-              </defs>
-
-              <rect x="0" y="0" width="100" height="100" rx="7" fill="url(#land-gradient)"></rect>
-              <path d="M4 72 C18 54, 22 24, 42 20 S72 28, 96 18" class="terrain"></path>
-              <path d="M8 90 C22 72, 34 54, 47 46 S70 48, 94 62" class="terrain soft"></path>
-              <path d="M12 12 L88 86" class="grid-line"></path>
-              <path d="M8 54 L92 54" class="grid-line"></path>
-              <g id="route-layer"></g>
-              <g id="node-layer"></g>
-            </svg>
-
-            <div class="map-caption" id="map-caption">
-              等待 Agent 生成路线...
-            </div>
-          </div>
-        </section>
-
-        <section class="side-panel">
-          <section class="panel composer-panel">
+        <section class="command-column">
+          <section class="panel planner-panel">
             <div class="panel-header">
               <div>
-                <p class="section-kicker">Agent Console</p>
-                <h2>对话与约束</h2>
+                <p class="section-kicker">步骤 1</p>
+                <h2>你现在最需要什么</h2>
               </div>
               <div id="status-chip" class="status-chip">Ready</div>
             </div>
 
+            <div class="intent-grid" id="intent-grid">
+              <button
+                class="intent-card active"
+                type="button"
+                data-query="我今天要办理宿舍入住，看看今天能不能办完"
+              >
+                <span class="intent-title">我今天还能办完入住吗？</span>
+                <span class="intent-copy">先告诉我今天来不来得及，再给我可执行的顺序。</span>
+              </button>
+              <button
+                class="intent-card"
+                type="button"
+                data-query="我今天要办理宿舍入住，请告诉我现在先去哪最不容易卡住"
+              >
+                <span class="intent-title">我现在先去哪最稳？</span>
+                <span class="intent-copy">优先避开最容易错过的窗口，直接告诉我第一步。</span>
+              </button>
+            </div>
+            <div class="intent-footnote">
+              <span>如果你主要担心材料：</span>
+              <button
+                id="material-intent-button"
+                class="intent-ghost"
+                type="button"
+                data-query="我今天要办理宿舍入住，帮我检查缺哪些材料会卡住"
+              >
+                直接按材料风险重算
+              </button>
+            </div>
+
+            <section class="preset-strip">
+              <div class="preset-strip-head">
+                <p class="section-kicker">快速试玩</p>
+                <p class="support-copy">一键切到最适合演示的三种情况：顺利办完、来不及、先看材料。</p>
+              </div>
+              <div class="preset-grid">
+                <button class="preset-card active" type="button" data-preset="standard_day">
+                  <span class="preset-title">标准入住日</span>
+                  <span class="preset-copy">09:40 出发，先看今天能不能顺利办完。</span>
+                </button>
+                <button class="preset-card" type="button" data-preset="late_arrival">
+                  <span class="preset-title">中午才到校</span>
+                  <span class="preset-copy">12:20 才能开始，演示系统如何建议改期。</span>
+                </button>
+                <button class="preset-card" type="button" data-preset="core_materials_ready">
+                  <span class="preset-title">常见材料已带齐</span>
+                  <span class="preset-copy">自动勾上常见 6 项，先看第一步能不能直接走。</span>
+                </button>
+              </div>
+            </section>
+
             <form id="planner-form" class="planner-form">
               <label class="field">
-                <span>用户需求</span>
-                <textarea id="query-input" name="query" rows="3">我今天要办理宿舍入住，请帮我规划线路</textarea>
+                <span>还有什么现实限制（可选）</span>
+                <textarea
+                  id="notes-input"
+                  name="notes"
+                  rows="3"
+                  placeholder="例如：我 11 点到 12 点有课；我现在还没拿到临时学生证；我只想先做最容易卡住的一步。"
+                ></textarea>
               </label>
 
               <div class="field-row">
                 <label class="field">
-                  <span>当前地点</span>
+                  <span>你现在在哪</span>
                   <select id="location-input" name="current_location">
                     <option value="blk365_singapore">BLK 365 Singapore</option>
+                    <option value="dormitory_a">Dormitory A</option>
                     <option value="nus_utown">NUS UTown</option>
                     <option value="nus_yih">NUS YIH</option>
                     <option value="nus_ea">NUS EA</option>
                     <option value="kent_ridge_hall">Kent Ridge Hall</option>
+                    <option value="express_station">Campus Express Station</option>
+                    <option value="building_a">Teaching Building A</option>
+                    <option value="finance_office">Finance Office</option>
                   </select>
                 </label>
 
                 <label class="field">
-                  <span>当前时间</span>
+                  <span>你最早几点能开始</span>
                   <input id="time-input" name="current_time" type="time" value="09:40" />
                 </label>
               </div>
 
-              <button class="primary-button" type="submit">生成今日规划</button>
-            </form>
-          </section>
+              <div class="field-row">
+                <label class="field">
+                  <span>你准备哪天去</span>
+                  <input id="date-input" name="date" type="date" value="2026-03-13" />
+                  <div class="field-hint">
+                    内置课表样例覆盖 2026-03-13 与 2026-03-14；如果你上传自己的日历，请改成对应日期。
+                  </div>
+                </label>
+                <div class="field info-field">
+                  <span>课表冲突</span>
+                  <div class="static-note">默认会避开示例课表中的固定安排。</div>
+                </div>
+              </div>
 
-          <section class="panel thinking-panel">
+              <section class="materials-picker">
+                <div class="materials-header">
+                  <div>
+                    <p class="section-kicker">步骤 2</p>
+                    <h3>你手上已经有什么</h3>
+                  </div>
+                </div>
+                <div class="materials-toolbar">
+                  <p class="materials-tip">先勾常见必带，再按需要展开补充材料。不勾也能算路线，但勾完会更快看出哪一步会卡住。</p>
+                  <span id="materials-count" class="meta-pill materials-count">还没勾选</span>
+                </div>
+                <div class="materials-actions">
+                  <button id="materials-fill-core" class="secondary-button mini-action" type="button">
+                    一键勾选常见 6 项
+                  </button>
+                  <button id="materials-clear" class="secondary-button mini-action subtle" type="button">
+                    清空
+                  </button>
+                </div>
+
+                <div class="materials-group">
+                  <p class="materials-group-label">常见必带</p>
+                  <div class="materials-grid">
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="录取通知书" data-group="core" />
+                      <span>录取通知书</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="护照或身份证件" data-group="core" />
+                      <span>护照或身份证件</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="住宿预约邮件" data-group="core" />
+                      <span>住宿预约邮件</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="临时学生证" data-group="core" />
+                      <span>临时学生证</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="手机号码" data-group="core" />
+                      <span>手机号码</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="住宿确认邮件" data-group="core" />
+                      <span>住宿确认邮件</span>
+                    </label>
+                  </div>
+                </div>
+
+                <details class="extra-materials-panel">
+                  <summary>补充材料（不确定时再展开）</summary>
+                  <div class="materials-grid">
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="入住表" data-group="extra" />
+                      <span>入住表</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="证件照电子版" data-group="extra" />
+                      <span>证件照电子版</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="紧急联系人信息" data-group="extra" />
+                      <span>紧急联系人信息</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="校园卡" data-group="extra" />
+                      <span>校园卡</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="已盖章入住表" data-group="extra" />
+                      <span>已盖章入住表</span>
+                    </label>
+                    <label class="material-toggle">
+                      <input type="checkbox" name="available_materials" value="证件原件" data-group="extra" />
+                      <span>证件原件</span>
+                    </label>
+                  </div>
+                </details>
+              </section>
+
+              <button class="primary-button" type="submit">生成今天的入住方案</button>
+            </form>
+
+            <details class="demo-panel">
+              <summary>有自己的课表或特殊情况？</summary>
+              <div class="demo-panel-body">
+                <p class="support-copy">
+                  默认样例已经能直接看效果。只有你想导入自己的课表、补充特殊情况时，才需要展开这里。
+                </p>
+                <div class="field-row">
+                  <label class="field">
+                    <span>上传课表或日程（可选）</span>
+                    <input id="calendar-upload" name="calendar_upload" type="file" accept=".json,.ics" />
+                  </label>
+                  <label class="field">
+                    <span>补充办事资料（可选）</span>
+                    <input id="knowledge-upload" name="knowledge_upload" type="file" accept=".json" multiple />
+                  </label>
+                </div>
+                <div class="upload-notes">
+                  <div id="calendar-status" class="upload-status">未选择日历文件，将使用内置样例课表。</div>
+                  <div id="knowledge-status" class="upload-status">未选择知识库文件，将使用内置办事知识库。</div>
+                </div>
+              </div>
+            </details>
+          </section>
+        </section>
+
+        <section class="result-column">
+          <section class="panel summary-panel">
             <div class="panel-header">
               <div>
-                <p class="section-kicker">Transparent Reasoning</p>
-                <h2>Agent 思考流</h2>
+                <p class="section-kicker">一眼结论</p>
+                <h2 id="summary-headline">先选一个常见任务</h2>
               </div>
+              <span id="summary-badge" class="summary-badge idle">待规划</span>
             </div>
-            <p id="thought-process" class="thought-process">
-              提交需求后，这里会展示 Agent 如何结合课表、办公时窗和路线耗时做决策。
-            </p>
-            <div id="alerts" class="alerts"></div>
+
+            <div class="summary-body">
+              <p id="summary-subheadline" class="summary-subheadline">
+                这版助手会优先回答三件事：今天能不能办完、现在先去哪、还缺什么材料。
+              </p>
+
+              <div class="summary-grid">
+                <article class="summary-card">
+                  <p class="summary-label">现在先去</p>
+                  <h3 id="next-step-title">等待规划</h3>
+                  <p id="next-step-meta" class="summary-copy">生成后会告诉你下一步地点和时间。</p>
+                </article>
+                <article class="summary-card">
+                  <p class="summary-label">预计完成</p>
+                  <h3 id="finish-time">--:--</h3>
+                  <p id="finish-meta" class="summary-copy">还没有今天的办理结果。</p>
+                </article>
+                <article class="summary-card">
+                  <p class="summary-label">关键提醒</p>
+                  <h3 id="deadline-title">等你开始</h3>
+                  <p id="deadline-note" class="summary-copy">我会优先把硬时间窗和固定日程避开。</p>
+                </article>
+              </div>
+
+              <div id="alerts" class="alerts compact-alerts"></div>
+            </div>
           </section>
 
           <section class="panel timeline-panel">
             <div class="panel-header">
               <div>
-                <p class="section-kicker">Smart Timeline</p>
-                <h2>时间轴</h2>
+                <p class="section-kicker">今天路线</p>
+                <h2>今天的办理顺序</h2>
               </div>
-              <span id="timeline-count" class="timeline-count">0 steps</span>
+              <div class="timeline-tools">
+                <span id="timeline-count" class="timeline-count">0 步</span>
+                <button id="timeline-toggle" class="secondary-button compact-button" type="button" hidden>
+                  展开全部
+                </button>
+              </div>
             </div>
             <div id="timeline" class="timeline"></div>
           </section>
 
-          <section class="panel details-panel">
+          <section class="panel prep-panel">
             <div class="panel-header">
               <div>
-                <p class="section-kicker">Context Pack</p>
-                <h2>技能与材料</h2>
+                <p class="section-kicker">出发前</p>
+                <h2>出发前检查</h2>
               </div>
+              <span id="material-score" class="meta-pill">待确认</span>
             </div>
-            <div class="details-grid">
-              <div>
-                <h3>Skills</h3>
-                <ul id="skills-list" class="tag-list"></ul>
-              </div>
-              <div>
-                <h3>Required Materials</h3>
-                <ul id="materials-list" class="material-list"></ul>
-              </div>
+
+            <div class="prep-grid">
+              <section class="prep-card material-card">
+                <div class="prep-head">
+                  <h3>材料检查</h3>
+                  <p id="material-note" class="panel-copy">
+                    我会先告诉你第一步就会用到什么，再补充后面会陆续用到的材料。
+                  </p>
+                </div>
+                <div class="material-columns">
+                  <div>
+                    <h4 id="material-primary-heading">第一步就会用</h4>
+                    <ul id="material-ready-list" class="material-list"></ul>
+                  </div>
+                  <div>
+                    <h4 id="material-secondary-heading">后面还会用</h4>
+                    <ul id="material-missing-list" class="material-list"></ul>
+                  </div>
+                </div>
+              </section>
+
+              <section id="fallback-panel" class="prep-card fallback-card">
+                <div class="prep-head">
+                  <h3 id="fallback-title">如果今天来不及</h3>
+                  <p id="fallback-copy" class="panel-copy">
+                    如果今天赶不上窗口，我会在这里给出下一套可执行方案。
+                  </p>
+                </div>
+                <div id="fallback-preview" class="fallback-preview"></div>
+                <ul id="fallback-list" class="fallback-list"></ul>
+              </section>
             </div>
           </section>
+
+          <details class="panel sync-panel">
+            <summary>想把提醒放进日历？（可选）</summary>
+            <div class="sync-body">
+              <div id="sync-cards" class="sync-cards"></div>
+              <div class="sync-actions">
+                <button id="ics-export-button" class="primary-button" type="button">导出 ICS</button>
+                <button id="google-sync-button" class="secondary-button" type="button">同步到 Google</button>
+              </div>
+              <div id="sync-summary" class="sync-summary">先生成一条方案，再决定是否导出到日历。</div>
+            </div>
+          </details>
+
+          <details class="panel debug-panel">
+            <summary>想知道路线为什么这么排？</summary>
+            <div class="debug-body">
+              <p class="debug-intro">
+                如果你觉得这条路线不合理，可以展开看看路径、证据和安排依据。平时使用时，这一块不用管。
+              </p>
+              <div class="debug-grid">
+                <section class="debug-map">
+                  <div class="map-stage">
+                    <svg id="campus-map" viewBox="0 0 100 100" preserveAspectRatio="none" aria-label="新生报到助手路线预览图">
+                      <defs>
+                        <linearGradient id="route-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                          <stop offset="0%" stop-color="#ffcb77"></stop>
+                          <stop offset="100%" stop-color="#f25f5c"></stop>
+                        </linearGradient>
+                        <linearGradient id="land-gradient" x1="0%" x2="100%" y1="0%" y2="100%">
+                          <stop offset="0%" stop-color="#12343b"></stop>
+                          <stop offset="100%" stop-color="#255957"></stop>
+                        </linearGradient>
+                      </defs>
+
+                      <rect x="0" y="0" width="100" height="100" rx="7" fill="url(#land-gradient)"></rect>
+                      <path d="M4 72 C18 54, 22 24, 42 20 S72 28, 96 18" class="terrain"></path>
+                      <path d="M8 90 C22 72, 34 54, 47 46 S70 48, 94 62" class="terrain soft"></path>
+                      <path d="M12 12 L88 86" class="grid-line"></path>
+                      <path d="M8 54 L92 54" class="grid-line"></path>
+                      <g id="route-layer"></g>
+                      <g id="node-layer"></g>
+                    </svg>
+
+                    <div class="map-caption" id="map-caption">生成后会在这里显示路线预览。</div>
+                  </div>
+                </section>
+
+                <section class="debug-copy">
+                  <div>
+                    <h3>为什么这样排</h3>
+                    <p id="thought-process" class="thought-process">
+                      如果你觉得路线不对，这里会解释系统为什么这么安排今天的顺序。
+                    </p>
+                  </div>
+                  <div>
+                    <h3>参考片段</h3>
+                    <ul id="knowledge-list" class="material-list"></ul>
+                  </div>
+                  <div>
+                    <h3>系统检查了什么</h3>
+                    <ul id="skills-list" class="tag-list"></ul>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </details>
         </section>
       </main>
     </div>

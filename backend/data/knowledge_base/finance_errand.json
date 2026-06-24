@@ -1,0 +1,60 @@
+{
+  "id": "finance_errand",
+  "title": "财务交表与取快递",
+  "summary": "围绕上课时间安排取快递和去财务处交表，优先满足财务处 16:30 的死限。",
+  "keywords": [
+    "财务",
+    "交表",
+    "快递",
+    "报销",
+    "finance",
+    "parcel",
+    "express"
+  ],
+  "intent_keywords": [
+    "财务处交表",
+    "取快递"
+  ],
+  "default_current_location": "dormitory_a",
+  "destination_location": "finance_office",
+  "success_alerts": [
+    "财务处 16:30 关闭，系统会优先确保交表节点在下班前完成。"
+  ],
+  "blocked_alerts": [
+    "抱歉，按当前时间和路程测算，今天已无法赶在财务处 16:30 关闭前完成交表。"
+  ],
+  "tasks": [
+    {
+      "task_id": "collect_parcel",
+      "action": "取快递",
+      "location_id": "express_station",
+      "working_hours": [
+        "13:00-19:00"
+      ],
+      "estimated_duration_mins": 10,
+      "required_materials": [
+        "取件码"
+      ],
+      "notes": "松散节点，可以在上课前先完成。"
+    },
+    {
+      "task_id": "submit_finance_form",
+      "action": "去财务处交表",
+      "location_id": "finance_office",
+      "working_hours": [
+        "14:00-16:30"
+      ],
+      "estimated_duration_mins": 15,
+      "required_materials": [
+        "报销表",
+        "学生证"
+      ],
+      "notes": "财务处有明确死限，必须在 16:30 前办完。"
+    }
+  ],
+  "evidence_snippets": [
+    "快递站工作时间较宽松，可以作为松散节点提前处理。",
+    "财务处只在 14:00-16:30 受理交表，晚到会直接错过办理。",
+    "若下午已有课程，应先评估课后步行到财务处是否还能赶上死限。"
+  ]
+}

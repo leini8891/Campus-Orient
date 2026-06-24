@@ -1,0 +1,47 @@
+{
+  "id": "student_card_reissue",
+  "title": "学生证补办",
+  "summary": "补办学生证需要先核验身份，再去卡务点制卡。",
+  "keywords": [
+    "学生证",
+    "补办",
+    "卡务"
+  ],
+  "default_current_location": "blk365_singapore",
+  "success_alerts": [
+    "学生证补办一般需要先完成身份核验。"
+  ],
+  "tasks": [
+    {
+      "task_id": "verify_identity",
+      "action": "核验身份",
+      "location_id": "nus_utown",
+      "working_hours": [
+        "09:30-17:00"
+      ],
+      "estimated_duration_mins": 10,
+      "required_materials": [
+        "护照"
+      ],
+      "notes": "先核对个人身份和学生记录。"
+    },
+    {
+      "task_id": "reissue_card",
+      "action": "补办学生证",
+      "location_id": "nus_yih",
+      "working_hours": [
+        "10:00-16:00"
+      ],
+      "estimated_duration_mins": 15,
+      "required_materials": [
+        "证件照",
+        "学生编号"
+      ],
+      "notes": "卡务点现场补卡。"
+    }
+  ],
+  "evidence_snippets": [
+    "补办学生证前需要先完成身份核验。",
+    "卡务点在工作时间内可受理补卡。"
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "user_id": "student_001",
+  "timezone": "Asia/Singapore",
+  "dates": {
+    "2026-03-13": [
+      {
+        "start_time": "11:00",
+        "end_time": "12:00",
+        "event": "ME2102 工程课",
+        "location_id": "nus_ea",
+        "scenario_ids": [
+          "dorm_move_in"
+        ]
+      },
+      {
+        "start_time": "14:00",
+        "end_time": "16:00",
+        "event": "专业课",
+        "location_id": "building_a",
+        "scenario_ids": [
+          "finance_errand"
+        ]
+      }
+    ],
+    "2026-03-14": [
+      {
+        "start_time": "10:00",
+        "end_time": "11:30",
+        "event": "算法讨论课",
+        "location_id": "building_a",
+        "scenario_ids": []
+      }
+    ]
+  }
+}

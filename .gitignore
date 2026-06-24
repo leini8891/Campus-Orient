@@ -3,3 +3,6 @@
 __pycache__/
 *.pyc
 sjsu-cs46a-fall-2023-syllabus.pdf
+exports/
+.DS_Store
+.codex/

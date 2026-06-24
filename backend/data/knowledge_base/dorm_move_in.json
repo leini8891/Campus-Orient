@@ -1,0 +1,86 @@
+{
+  "id": "dorm_move_in",
+  "title": "宿舍入住办理",
+  "summary": "需要在 UTown、YIH、EA 三个办理点完成入住流程，最后前往 Kent Ridge Hall。",
+  "keywords": [
+    "宿舍",
+    "入住",
+    "住宿",
+    "move in",
+    "hall",
+    "check in"
+  ],
+  "intent_keywords": [
+    "宿舍入住",
+    "办理入住"
+  ],
+  "default_current_location": "blk365_singapore",
+  "destination_location": "kent_ridge_hall",
+  "destination_action": "前往宿舍完成入住与领钥匙",
+  "destination_duration_mins": 20,
+  "destination_materials": [
+    "校园卡",
+    "已盖章入住表",
+    "证件原件"
+  ],
+  "destination_notes": "终点为宿舍，前序手续完成后即可直接入住。",
+  "success_alerts": [
+    "NUS EA 入住窗口 12:15-16:30，系统会优先确保这一步不超时。"
+  ],
+  "blocked_alerts": [
+    "抱歉，当前时间下已无法在 NUS EA 16:30 关闭前完成宿舍入住全流程，建议明天上午优先前往。"
+  ],
+  "tasks": [
+    {
+      "task_id": "check_documents",
+      "action": "核验入住材料",
+      "location_id": "nus_utown",
+      "working_hours": [
+        "09:30-12:00",
+        "13:00-17:00"
+      ],
+      "estimated_duration_mins": 20,
+      "required_materials": [
+        "录取通知书",
+        "护照或身份证件",
+        "住宿预约邮件"
+      ],
+      "notes": "学生服务柜台会核对录取与住宿记录。"
+    },
+    {
+      "task_id": "activate_access",
+      "action": "激活校园卡与门禁权限",
+      "location_id": "nus_yih",
+      "working_hours": [
+        "10:00-17:00"
+      ],
+      "estimated_duration_mins": 15,
+      "required_materials": [
+        "临时学生证",
+        "手机号码",
+        "住宿确认邮件"
+      ],
+      "notes": "完成后可直接用于宿舍门禁和部分校园服务。"
+    },
+    {
+      "task_id": "submit_housing_forms",
+      "action": "提交入住表与拍照确认",
+      "location_id": "nus_ea",
+      "working_hours": [
+        "12:15-16:30"
+      ],
+      "estimated_duration_mins": 15,
+      "required_materials": [
+        "入住表",
+        "证件照电子版",
+        "紧急联系人信息"
+      ],
+      "notes": "这是今天的硬时间窗，建议上课后优先办理。"
+    }
+  ],
+  "evidence_snippets": [
+    "UTown 学生服务柜台负责核验录取通知书、证件和住宿预约信息。",
+    "YIH 办理校园卡与门禁权限激活，完成后才能顺畅进入宿舍。",
+    "EA 入住窗口只开放到 16:30，是整个流程里的硬时间窗。"
+  ]
+}

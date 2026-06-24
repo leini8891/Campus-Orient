@@ -1,0 +1,234 @@
+{
+  "locations": {
+    "blk365_singapore": {
+      "id": "blk365_singapore",
+      "name": "BLK 365 Singapore",
+      "short_name": "BLK 365",
+      "x": 10,
+      "y": 76,
+      "zone": "Start"
+    },
+    "nus_utown": {
+      "id": "nus_utown",
+      "name": "NUS UTown",
+      "short_name": "UTown",
+      "x": 29,
+      "y": 28,
+      "zone": "Student Hub"
+    },
+    "nus_yih": {
+      "id": "nus_yih",
+      "name": "NUS Yusof Ishak House",
+      "short_name": "YIH",
+      "x": 52,
+      "y": 45,
+      "zone": "Admin"
+    },
+    "nus_ea": {
+      "id": "nus_ea",
+      "name": "NUS Engineering Auditorium",
+      "short_name": "EA",
+      "x": 71,
+      "y": 30,
+      "zone": "Class"
+    },
+    "kent_ridge_hall": {
+      "id": "kent_ridge_hall",
+      "name": "Kent Ridge Hall",
+      "short_name": "KR Hall",
+      "x": 87,
+      "y": 58,
+      "zone": "Finish"
+    },
+    "dormitory_a": {
+      "id": "dormitory_a",
+      "name": "Dormitory A",
+      "short_name": "Dorm A",
+      "x": 18,
+      "y": 72,
+      "zone": "Start"
+    },
+    "express_station": {
+      "id": "express_station",
+      "name": "Campus Express Station",
+      "short_name": "Express",
+      "x": 35,
+      "y": 58,
+      "zone": "Errand"
+    },
+    "building_a": {
+      "id": "building_a",
+      "name": "Teaching Building A",
+      "short_name": "Bldg A",
+      "x": 58,
+      "y": 36,
+      "zone": "Class"
+    },
+    "finance_office": {
+      "id": "finance_office",
+      "name": "Finance Office",
+      "short_name": "Finance",
+      "x": 82,
+      "y": 56,
+      "zone": "Admin"
+    }
+  },
+  "scenarios": {
+    "dorm_move_in": {
+      "id": "dorm_move_in",
+      "title": "宿舍入住办理",
+      "summary": "需要在 UTown、YIH、EA 三个办理点完成入住流程，最后前往 Kent Ridge Hall。",
+      "keywords": [
+        "宿舍",
+        "入住",
+        "住宿",
+        "move in",
+        "hall",
+        "check in"
+      ],
+      "intent_keywords": [
+        "宿舍入住",
+        "办理入住"
+      ],
+      "default_current_location": "blk365_singapore",
+      "destination_location": "kent_ridge_hall",
+      "destination_action": "前往宿舍完成入住与领钥匙",
+      "destination_duration_mins": 20,
+      "destination_materials": [
+        "校园卡",
+        "已盖章入住表",
+        "证件原件"
+      ],
+      "destination_notes": "终点为宿舍，前序手续完成后即可直接入住。",
+      "success_alerts": [
+        "NUS EA 入住窗口 12:15-16:30，系统会优先确保这一步不超时。"
+      ],
+      "blocked_alerts": [
+        "抱歉，当前时间下已无法在 NUS EA 16:30 关闭前完成宿舍入住全流程，建议明天上午优先前往。"
+      ],
+      "calendar": {
+        "busy_slots": [
+          {
+            "start_time": "11:00",
+            "end_time": "12:00",
+            "event": "ME2102 工程课",
+            "location_id": "nus_ea"
+          }
+        ]
+      },
+      "tasks": [
+        {
+          "task_id": "check_documents",
+          "action": "核验入住材料",
+          "location_id": "nus_utown",
+          "working_hours": [
+            "09:30-12:00",
+            "13:00-17:00"
+          ],
+          "estimated_duration_mins": 20,
+          "required_materials": [
+            "录取通知书",
+            "护照或身份证件",
+            "住宿预约邮件"
+          ],
+          "notes": "学生服务柜台会核对录取与住宿记录。"
+        },
+        {
+          "task_id": "activate_access",
+          "action": "激活校园卡与门禁权限",
+          "location_id": "nus_yih",
+          "working_hours": [
+            "10:00-17:00"
+          ],
+          "estimated_duration_mins": 15,
+          "required_materials": [
+            "临时学生证",
+            "手机号码",
+            "住宿确认邮件"
+          ],
+          "notes": "完成后可直接用于宿舍门禁和部分校园服务。"
+        },
+        {
+          "task_id": "submit_housing_forms",
+          "action": "提交入住表与拍照确认",
+          "location_id": "nus_ea",
+          "working_hours": [
+            "12:15-16:30"
+          ],
+          "estimated_duration_mins": 15,
+          "required_materials": [
+            "入住表",
+            "证件照电子版",
+            "紧急联系人信息"
+          ],
+          "notes": "这是今天的硬时间窗，建议上课后优先办理。"
+        }
+      ]
+    },
+    "finance_errand": {
+      "id": "finance_errand",
+      "title": "财务交表与取快递",
+      "summary": "围绕上课时间安排取快递和去财务处交表，优先满足财务处 16:30 的死限。",
+      "keywords": [
+        "财务",
+        "交表",
+        "快递",
+        "报销",
+        "finance",
+        "parcel",
+        "express"
+      ],
+      "intent_keywords": [
+        "财务处交表",
+        "取快递"
+      ],
+      "default_current_location": "dormitory_a",
+      "destination_location": "finance_office",
+      "success_alerts": [
+        "财务处 16:30 关闭，系统会优先确保交表节点在下班前完成。"
+      ],
+      "blocked_alerts": [
+        "抱歉，按当前时间和路程测算，今天已无法赶在财务处 16:30 关闭前完成交表。"
+      ],
+      "calendar": {
+        "busy_slots": [
+          {
+            "start_time": "14:00",
+            "end_time": "16:00",
+            "event": "专业课",
+            "location_id": "building_a"
+          }
+        ]
+      },
+      "tasks": [
+        {
+          "task_id": "collect_parcel",
+          "action": "取快递",
+          "location_id": "express_station",
+          "working_hours": [
+            "13:00-19:00"
+          ],
+          "estimated_duration_mins": 10,
+          "required_materials": [
+            "取件码"
+          ],
+          "notes": "松散节点，可以在上课前先完成。"
+        },
+        {
+          "task_id": "submit_finance_form",
+          "action": "去财务处交表",
+          "location_id": "finance_office",
+          "working_hours": [
+            "14:00-16:30"
+          ],
+          "estimated_duration_mins": 15,
+          "required_materials": [
+            "报销表",
+            "学生证"
+          ],
+          "notes": "财务处有明确死限，必须在 16:30 前办完。"
+        }
+      ]
+    }
+  }
+}
