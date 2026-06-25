@@ -1,4 +1,6 @@
-# 新生报到助手
+# 新生报到助手 · Orient
+
+> 中文 README（当前文件） · [English README](README.en.md)
 
 一个本地可运行、可直接演示的 AI product demo：它不再是泛泛的 “Student Assistant”，而是聚焦在一个真实又高频的瞬间问题上:
 
@@ -128,7 +130,7 @@ flowchart LR
 ## Run Locally
 
 ```bash
-cd "/Users/bonnie/Documents/Code/student assistant"
+cd Campus-Intelligent-Assistant
 python3 -m backend.server
 ```
 
@@ -169,7 +171,9 @@ backend/
   knowledge_base.py        # Local retrieval and evidence snippets
   calendar_provider.py     # Built-in calendar + uploaded JSON / ICS parsing
   calendar_sync.py         # ICS export and optional Google sync
+  scenario_store.py        # Loads scenarios.json: locations, tasks, destinations
   skills.py                # Shared skill entrypoints
+  utils.py                 # Time parsing/formatting and walk-time estimation
   data/
     calendars/             # Sample class schedules
     knowledge_base/        # Scenario documents
@@ -206,4 +210,4 @@ docs/screenshots/
 
 ## License
 
-当前仓库未附带单独 license 文件；如果你打算公开发布，建议补一个明确的开源许可。
+本项目基于 [MIT License](LICENSE) 开源，可自由使用、修改与分发。
